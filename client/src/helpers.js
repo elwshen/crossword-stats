@@ -5,4 +5,16 @@ export function formatTime(secs) {
   return secs + "s";
 }
 
-export const colors = { 140938625: "#a8d1d1", 60484427: "#9ea1d4" };
+export const colors = ["#a8d1d1", "#9ea1d4", "#618264", "#FD8A8A", "#D2E0FB"];
+
+export function assignRandomColor(existing_users) {
+  let chosen_color =
+    colors[Math.floor(Math.random() * colors.length)];
+  while (
+    existing_users.filter((user) => user.color == chosen_color).length > 0
+  ) {
+    chosen_color =
+      colors[Math.floor(Math.random() * colors.length)];
+  }
+  return chosen_color;
+}

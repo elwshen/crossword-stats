@@ -3,29 +3,33 @@ import * as helpers from "./helpers.js";
 
 export default class StatsContainer extends PureComponent {
   render() {
-    const aggStats = this.props.aggStats;
+    const { aggStats, users } = this.props;
     return (
       <div className="agg-stats">
-        {Object.keys(aggStats).map((stat) => {
-          const value = Object.values(aggStats[stat]).sort(
-            (a, b) => a.time - b.time
-          );
-          return (
-            <div className="cell">
-              {stat}
-              {Object.values(value).map((user_data, index) => (
-                <div
-                  className="cell-value"
-                  style={{
-                    backgroundColor: helpers.colors[user_data.user_id],
-                  }}
-                >
-                  {index + 1 + ". " + helpers.formatTime(user_data.time)}
-                </div>
-              ))}
-            </div>
-          );
-        })}
+        <h3>stats</h3>
+        <table >
+          {Object.keys(aggStats).map((stat) => {
+            const value = Object.values(aggStats[stat]).sort(
+              (a, b) => a.time - b.time
+            );
+            return (
+              <tr>
+                <td> {stat}</td>
+                {Object.values(value).map((user_data, index) => (
+                  <td
+                    style={{
+                      backgroundColor: users.find((user) => {
+                        return user.user_id == user_data.user_id;
+                      }).color,
+                    }}
+                  >
+                    {index + 1 + ". " + helpers.formatTime(user_data.time)}
+                  </td>
+                ))}
+              </tr>
+            );
+          })}
+        </table>
       </div>
     );
   }

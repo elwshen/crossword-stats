@@ -8,6 +8,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import StatsContainer from "./stats.js";
+import * as helpers from "./helpers.js";
 
 function App() {
   dayjs.extend(utc);
@@ -17,15 +18,29 @@ function App() {
     [d3.utcMonth.offset(new Date(), -1), new Date()].map(d3.utcFormat("%Q"))
   );
   const [crosswordType, setCrosswordType] = React.useState("mini");
-
-  const tokens = [
-    "2EaMrfl24/XIwA2wR6SceiQDIGA/KAduAW0k113qRonzFGSVHxGbIcI5SplQNDuhtijOoea6bgYnTBH3pVcqmapm6FE2EUTFvlFSbzNxWVZQBt4MULXVkpe2s9BfGScIGbXtQ9nkvk2P3hbxyL9XGUcFSCjp7uwW.Rm2V073oeo2rd4q1iYRFi/t7a3A.qoGiUg/Q79qzXGd2RlxsgknkXoDA2pWDepIos^^^^CBQSLwiP39WlBhCmh9alBhoSMS3Q-uO_vXYPijH_onYGioYSIMvW6xwqAh53ONP5_t8EGkCQQEAy7FiGlLh6y_4-3CP99bvgmH45OCtLcqsv4TBdCSUjH1ScME0IReZ4uOknzWxb4z_3qHT1LlwAgOGkgQMF",
-    "1E5XFaiWdzZ8XyeDkTF8I1zPtgu3U1hhH3SlwMn1FGcKTAkxUJwKiazpdV9PwYR2YXjOoea6bgYnTSC7mZxqsznIB64jOtZqE7xOprCFtdCrTCInBN8gIOssQhE5bPmBbZzrX536HBiJg0^^^^CBQSLwiwz8qmBhDr0MqmBhoSMS0C4DXNjxCQOg0mT5fpvS79IIGbmkMqAgAGOPnz5vkFGkBpk6f0LGvOIYwH8ZMSxBY0ebjDhNbFq-QZ8MAqjkzKcbUI0r-hjzHoNRuwNFEJ8KwpWU_KIUrQijyxOqkZrDsF",
-  ];
+  const [users, setUsers] = React.useState([]);
 
   React.useEffect(() => {
     fetchMiniCrosswordData();
-  }, [dateRange, crosswordType]);
+  }, [dateRange, crosswordType, users]);
+
+  function onAddToken(e) {
+    e.preventDefault();
+    const new_token = document.getElementById("token").value;
+    const new_name = document.getElementById("display_name").value;
+    const user_id = document.getElementById("user_id").value;
+    document.getElementById("token").value = "";
+    document.getElementById("display_name").value = "";
+    document.getElementById("user_id").value = "";
+    setUsers(
+      users.concat({
+        name: new_name,
+        token: new_token,
+        user_id: user_id,
+        color: helpers.assignRandomColor(users),
+      })
+    );
+  }
 
   function calculateAggStats(user_data) {
     var stats = {
@@ -74,7 +89,7 @@ function App() {
   function fetchMiniCrosswordData() {
     fetch(
       "/crossword_stats/user_tokens/" +
-        tokens.map((token) => encodeURIComponent(token)) +
+        users.map((user) => encodeURIComponent(user.token)) +
         "/start_date/" +
         dateRange[0] +
         "/end_date/" +
@@ -89,7 +104,9 @@ function App() {
         if (data == null || data.length == 0) {
           return null;
         }
-        const puzzle_data = data.filter((user_data) => user_data && user_data.length > 0);
+        const puzzle_data = data.filter(
+          (user_data) => user_data && user_data.length > 0
+        );
         calculateAggStats(puzzle_data);
         setData(puzzle_data);
       });
@@ -101,11 +118,9 @@ function App() {
         <h1>nyt crossword stats</h1>
       </div>
       <div>
-        {data == null ? (
-          <div></div>
-        ) : (
-          <div className="body-container">
-            <div className="chart-container">
+        <div className="body-container">
+          <div className="chart-container">
+            {data == null ? null : (
               <div className="type-toggles">
                 <button
                   className="type-toggle"
@@ -126,35 +141,60 @@ function App() {
                   normal
                 </button>
               </div>
-              <SolveTimesChart data={data} />
-              <div className="date-range-picker">
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DatePicker
-                    timezone="UTC"
-                    className="date-picker"
-                    onChange={(value) =>
-                      setDateRange([new Date(value).getTime(), dateRange[1]])
-                    }
-                    defaultValue={dayjs(d3.utcParse("%Q")(dateRange[0]))}
-                  />
-                  <div className="dash">-</div>
-                  <DatePicker
-                    timezone="UTC"
-                    className="date-picker"
-                    onChange={(value) =>
-                      setDateRange([dateRange[0], new Date(value).getTime()])
-                    }
-                    defaultValue={dayjs(d3.utcParse("%Q")(dateRange[1]))}
-                  />
-                </LocalizationProvider>
-              </div>
-            </div>
-
-            <div className="side-panel">
-              <StatsContainer aggStats={aggStats} />
+            )}
+            {data == null ? null : (
+              <SolveTimesChart data={data} users={users} />
+            )}
+            <div className="under-chart">
+              {data == null ? null : (
+                <div className="date-range-picker">
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      timezone="UTC"
+                      className="date-picker"
+                      onChange={(value) =>
+                        setDateRange([new Date(value).getTime(), dateRange[1]])
+                      }
+                      defaultValue={dayjs(d3.utcParse("%Q")(dateRange[0]))}
+                    />
+                    <div className="dash">-</div>
+                    <DatePicker
+                      timezone="UTC"
+                      className="date-picker"
+                      onChange={(value) =>
+                        setDateRange([dateRange[0], new Date(value).getTime()])
+                      }
+                      defaultValue={dayjs(d3.utcParse("%Q")(dateRange[1]))}
+                    />
+                  </LocalizationProvider>
+                </div>
+              )}
             </div>
           </div>
-        )}
+          <div className="side">
+            {data == null ? null : (
+              <div className="side-panel">
+                <div className="legend">
+                  <h3>players</h3>
+                  {users.map((user) => (
+                    <div style={{ backgroundColor: user.color }}>
+                      {user.name}
+                    </div>
+                  ))}
+                </div>
+                <StatsContainer aggStats={aggStats} users={users} />
+              </div>
+            )}
+            <form className="add-token-form" onSubmit={onAddToken}>
+              <input placeholder="display name" id={"display_name"}></input>
+              <input placeholder="token" id={"token"}></input>
+              <input placeholder="user id" id={"user_id"}></input>
+              <button className="add-token-button" onClick={onAddToken}>
+                Add token
+              </button>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
   );

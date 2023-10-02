@@ -9,7 +9,6 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import * as d3 from "d3";
-import * as helpers from "./helpers.js";
 
 export default class SolveTimesChart extends PureComponent {
   render() {
@@ -17,6 +16,8 @@ export default class SolveTimesChart extends PureComponent {
     if (!data || data.length == 0) {
       return <div />;
     }
+    const users = this.props.users;
+    console.log(users);
     const dateFormatter = (date) => {
       return d3.utcFormat("%-m/%-d")(date);
     };
@@ -40,7 +41,10 @@ export default class SolveTimesChart extends PureComponent {
           <YAxis />
           {data.map((user_data) => {
             let color =
-              user_data.length > 0 ? helpers.colors[user_data[0].user_id] : 0;
+              user_data.length > 0 ?  users.find((user) => {
+                return user.user_id == user_data[0].user_id
+            }).color : 0;
+            console.log(users);
             return (
               <Line
                 activeDot={false}

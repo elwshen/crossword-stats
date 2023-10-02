@@ -3,15 +3,11 @@ html {
   height: 100%;
   margin: 0;
   background-color: #fffad7;
-}
-
-.App {
-  text-align: center;
-  background-color: #fffad7;
   display: "flex";
   align-items: "center";
   justify-content: "center";
   flex-direction: column;
+  text-align: center;
 }
 
 .chart-container {
@@ -59,15 +55,20 @@ h1 {
   padding: 30px;
 }
 
-.date-range-picker{
+.date-range-picker {
   display: flex;
   flex-direction: row;
-  align-items: start;
-  background-color: #ffe5a78c;
-  border: 2px solid #ffe4a7;
-  border-radius: 6px;
+  align-items: center;
   padding: 10px;
   margin-left: 50px;
+}
+
+table,
+tr,
+td {
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding: 4px;
 }
 
 .dash {
@@ -75,44 +76,29 @@ h1 {
 }
 
 .side-panel {
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-  width: 30%;
-  flex-direction: column;
+  align-items: flex-start;
+  margin: 30px;
+  /* width: 30%;
+  height: 60vh; */
+  flex-direction: row;
   display: flex;
   justify-content: flex-start;
+  font-size: 18px;
 }
 
 .agg-stats {
-  font-size: 18px;
   text-align: left;
-  height: 60vh;
+  height: inherit;
   overflow: scroll;
-  background-color: #ff90bb68;
-  border: 2px solid #ff90bb68;
-  border-radius: 6px;
-}
-
-.cell {
-  width: 150px;
-  height: 90px;
-  display: flex;
-  font-size: 20px;
   align-items: center;
-  justify-content: center;
-  color: black;
-  border-radius: 6px;
-  margin: 2px;
-  padding: 10px;
   display: flex;
   flex-direction: column;
 }
 
-.cell-value {
-  background-color: #a8d1d1;
-  color: white;
-  padding: 4px;
+.side {
+  display:flex;
+  flex-direction: column;
+  padding: 40px;
 }
 
 .body-container {
@@ -139,4 +125,51 @@ h1 {
 
 .type-toggle:disabled {
   cursor: default;
+}
+
+.add-token-form {
+  flex-direction: column;
+  display: flex;
+  font-size: 16px;
+  padding: 8px;
+  margin-left: 20px;
+}
+
+input {
+  font-size: 16px;
+  margin: 4px;
+  outline: none;
+  border: 1px solid gray;
+  border-radius: 6px;
+  padding: 10px;
+  background-color: transparent;
+}
+
+.legend {
+  justify-content: flex-start;
+  align-items: center;
+  height: inherit;
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+}
+
+.under-chart {
+  width: 100%;
+  flex-direction: row;
+  display: flex;
+  justify-content: space-between;
+}
+
+.add-token-button {
+  outline: none;
+  border: 1px solid #ff90bb;
+  background: #ff90bb;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  width: 50%;
+  align-self: center;
+  margin-top: 10px;
+  padding: 6px;
 }
