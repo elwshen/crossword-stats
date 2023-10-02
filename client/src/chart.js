@@ -12,12 +12,11 @@ import * as d3 from "d3";
 
 export default class SolveTimesChart extends PureComponent {
   render() {
-    const data = this.props.data.filter(val => val);
+    const data = this.props.data.filter((val) => val);
     if (!data || data.length == 0) {
       return <div />;
     }
     const users = this.props.users;
-    console.log(users);
     const dateFormatter = (date) => {
       return d3.utcFormat("%-m/%-d")(date);
     };
@@ -41,12 +40,14 @@ export default class SolveTimesChart extends PureComponent {
           <YAxis />
           {data.map((user_data) => {
             let color =
-              user_data.length > 0 ?  users.find((user) => {
-                return user.user_id == user_data[0].user_id
-            }).color : 0;
-            console.log(users);
+              user_data.length > 0
+                ? users.find((user) => {
+                    return user.user_id == user_data[0].user_id;
+                  }).color
+                : 0;
             return (
               <Line
+                key={"line_" + user_data[0].user_id}
                 activeDot={false}
                 type="monotone"
                 data={user_data}

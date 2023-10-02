@@ -7,16 +7,17 @@ export default class StatsContainer extends PureComponent {
     return (
       <div className="agg-stats">
         <h3>stats</h3>
-        <table >
+        <table>
           {Object.keys(aggStats).map((stat) => {
             const value = Object.values(aggStats[stat]).sort(
               (a, b) => a.time - b.time
             );
             return (
-              <tr>
-                <td> {stat}</td>
+              <tr key={"stat_row_" + stat}>
+                <td> {stat} </td>
                 {Object.values(value).map((user_data, index) => (
                   <td
+                    key={"stat_cell_" + stat + "_" + index}
                     style={{
                       backgroundColor: users.find((user) => {
                         return user.user_id == user_data.user_id;
